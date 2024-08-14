@@ -6,7 +6,7 @@ import (
 
 func getUrlHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -15,7 +15,7 @@ func getUrlHandler(w http.ResponseWriter, r *http.Request) {
 
 func postShortLinkHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
