@@ -4,22 +4,29 @@ import (
 	"net/http"
 )
 
-func mainPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodPost {
-		body := "http://localhost:8080/EwHXdJfB"
-		_, _ = w.Write([]byte(body))
+func getUrlHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
 
-	if r.Method == http.MethodGet {
-		http.Redirect(w, r, "https://practicum.yandex.ru/", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "https://practicum.yandex.ru/", http.StatusTemporaryRedirect)
+}
+
+func postShortLinkHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
 
-	w.WriteHeader(http.StatusMethodNotAllowed)
+	body := "http://localhost:8080/EwHXdJfB"
+	_, _ = w.Write([]byte(body))
 }
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc(`/`, mainPage)
+	mux.HandleFunc(`/{id}`, getUrlHandler)
+	mux.HandleFunc(`/`, postShortLinkHandler)
 
 	err := http.ListenAndServe(`:8080`, mux)
 
