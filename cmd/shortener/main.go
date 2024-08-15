@@ -19,6 +19,8 @@ func postShortLinkHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
+
 	body := "http://localhost:8080/EwHXdJfB"
 	_, _ = w.Write([]byte(body))
 }
