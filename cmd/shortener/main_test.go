@@ -26,7 +26,7 @@ func testRequest(ts *httptest.Server, method,
 	resp, err := req.Execute(method, ts.URL+path)
 
 	if err != nil {
-		// Проверяем, если ошибка возникла из-за отсутствия следования за редиректами
+		// Проверяем, если ошибка возникла НЕ из-за отсутствия следования за редиректами
 		if resp != nil && resp.StatusCode() != http.StatusTemporaryRedirect {
 			panic(err)
 		}
