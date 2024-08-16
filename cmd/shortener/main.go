@@ -57,9 +57,9 @@ func postShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 	// Тут перебор map keyForValue это временный вариант, конечно так не надо делать.
 	if foundKey, isFound := keyForValue(globalStorage, rBodyString); isFound {
 		id = foundKey
-		globalStorage[id] = string(rBody)
 	} else {
 		id = randString(8)
+		globalStorage[id] = string(rBody)
 	}
 
 	shortLink := "http://" + r.Host + "/" + id
