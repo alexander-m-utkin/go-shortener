@@ -31,11 +31,6 @@ func keyForValue(m map[string]string, value string) (string, bool) {
 }
 
 func getUrlHandle(w http.ResponseWriter, r *http.Request) {
-	//if r.Method != http.MethodGet {
-	//	w.WriteHeader(http.StatusBadRequest)
-	//	return
-	//}
-
 	id := chi.URLParam(r, "id")
 
 	if url, ok := globalStorage[id]; ok {
@@ -47,11 +42,6 @@ func getUrlHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func postShortLinkHandle(w http.ResponseWriter, r *http.Request) {
-	//if r.Method != http.MethodPost {
-	//	w.WriteHeader(http.StatusBadRequest)
-	//	return
-	//}
-
 	rBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Failed to read request rBody", http.StatusBadRequest)
@@ -72,8 +62,10 @@ func postShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 		id = randString(8)
 	}
 
+	shortLink := "http://" + r.Host + "/" + id
+
 	w.WriteHeader(http.StatusCreated)
-	_, _ = w.Write([]byte(id))
+	_, _ = w.Write([]byte(shortLink))
 }
 
 func AppRouter() chi.Router {
