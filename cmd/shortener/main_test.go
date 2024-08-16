@@ -49,7 +49,7 @@ func TestGetUrlHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			request := httptest.NewRequest(tt.method, tt.path, nil)
 			w := httptest.NewRecorder()
-			getUrlHandler(w, request)
+			getUrlHandle(w, request)
 			res := w.Result()
 
 			assert.Equal(t, tt.want.code, res.StatusCode)
@@ -99,7 +99,7 @@ func TestPostShortLinkHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			request := httptest.NewRequest(tt.method, tt.path, bytes.NewBufferString(tt.body))
 			w := httptest.NewRecorder()
-			postShortLinkHandler(w, request)
+			postShortLinkHandle(w, request)
 			res := w.Result()
 
 			assert.Equal(t, tt.want.code, res.StatusCode)
