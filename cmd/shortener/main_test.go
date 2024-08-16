@@ -2,12 +2,74 @@ package main
 
 import (
 	"bytes"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
+
+func testRequest(ts *httptest.Server, method,
+	path string, body string) *resty.Response {
+
+	client := resty.New()
+	client.SetRedirectPolicy(resty.NoRedirectPolicy())
+
+	req := client.R()
+
+	if body != "" {
+		client.R().SetBody(body)
+	}
+
+	resp, err := req.Execute(method, ts.URL+path)
+
+	if err != nil {
+		// Проверяем, если ошибка возникла из-за отсутствия следования за редиректами
+		if resp != nil && resp.StatusCode() != http.StatusTemporaryRedirect {
+			panic(err)
+		}
+	}
+
+	return resp
+}
+
+func TestRouter(t *testing.T) {
+	ts := httptest.NewServer(AppRouter())
+	defer ts.Close()
+
+	type want struct {
+		body     string
+		code     int
+		location string
+	}
+
+	var testTable = []struct {
+		method string
+		url    string
+		want   want
+		body   string
+	}{
+		{method: http.MethodGet, url: "/EwHXdJfB", want: want{code: http.StatusTemporaryRedirect, location: "https://practicum.yandex.ru/"}},
+		{method: http.MethodGet, url: "/33333333", want: want{code: http.StatusBadRequest}},
+		{method: http.MethodPost, url: "/", body: "https://practicum.yandex.ru/", want: want{code: http.StatusCreated}},
+		{method: http.MethodPut, url: "/", body: "https://practicum.yandex.ru/", want: want{code: http.StatusMethodNotAllowed}},
+	}
+	for _, tt := range testTable {
+		resp := testRequest(ts, tt.method, tt.url, tt.body)
+
+		assert.Equal(t, tt.want.code, resp.StatusCode())
+
+		if tt.want.location != "" {
+			assert.Equal(t, tt.want.location, resp.Header().Get("location"))
+		}
+
+		if tt.want.body != "" {
+			assert.Equal(t, tt.body, string(resp.Body()))
+		}
+	}
+}
 
 func TestGetUrlHandler(t *testing.T) {
 	type want struct {
@@ -40,7 +102,7 @@ func TestGetUrlHandler(t *testing.T) {
 			name:   "POST /EwHXdJfB",
 			path:   "/EwHXdJfB",
 			want: want{
-				code: http.StatusBadRequest,
+				code: http.StatusMethodNotAllowed,
 			},
 		},
 	}
@@ -48,12 +110,12 @@ func TestGetUrlHandler(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			request := httptest.NewRequest(tt.method, tt.path, nil)
+			r := chi.NewRouter()
+			r.Get("/{id}", getUrlHandle)
 			w := httptest.NewRecorder()
-			getUrlHandle(w, request)
+			r.ServeHTTP(w, request)
 			res := w.Result()
-
 			assert.Equal(t, tt.want.code, res.StatusCode)
-
 			if tt.want.location != "" {
 				assert.Equal(t, tt.want.location, res.Header.Get("location"))
 			}
@@ -90,7 +152,7 @@ func TestPostShortLinkHandler(t *testing.T) {
 			method: http.MethodPut,
 			path:   "/",
 			want: want{
-				code: http.StatusBadRequest,
+				code: http.StatusMethodNotAllowed,
 			},
 		},
 	}
@@ -98,8 +160,12 @@ func TestPostShortLinkHandler(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			request := httptest.NewRequest(tt.method, tt.path, bytes.NewBufferString(tt.body))
+			request.Host = "localhost:8080"
+
+			r := chi.NewRouter()
+			r.Post("/", postShortLinkHandle)
 			w := httptest.NewRecorder()
-			postShortLinkHandle(w, request)
+			r.ServeHTTP(w, request)
 			res := w.Result()
 
 			assert.Equal(t, tt.want.code, res.StatusCode)

@@ -9,6 +9,7 @@ import (
 
 var globalStorage = map[string]string{
 	"EwHXdJfB": "https://practicum.yandex.ru/",
+	"NQmfnwrt": "https://practicum.yandex.ru/123/",
 }
 
 func randString(n int) string {
