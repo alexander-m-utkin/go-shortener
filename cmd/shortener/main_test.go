@@ -109,6 +109,8 @@ func TestPostShortLinkHandler(t *testing.T) {
 				if err != nil {
 					t.Fatalf("Failed to read body: %v", err)
 				}
+				defer res.Body.Close()
+
 				bodyString := string(bodyBytes)
 
 				assert.Equal(t, tt.want.body, bodyString)
