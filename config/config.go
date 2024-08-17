@@ -7,20 +7,20 @@ import (
 )
 
 type Envs struct {
-	baseUrl       string `env:"BASE_URL"`
+	baseURL       string `env:"BASE_URL"`
 	serverAddress string `env:"SERVER_ADDRESS"`
 }
 
 type Config struct {
 	ServerAddress string
-	BaseUrl       string
+	BaseURL       string
 	isInitiated   bool
 }
 
 func (c *Config) Init() {
-	if c.isInitiated != true {
+	if !c.isInitiated {
 		flag.StringVar(&c.ServerAddress, "a", "localhost:8080", "address and port to run server")
-		flag.StringVar(&c.BaseUrl, "b", "http://localhost:8080", "shortLink prefix")
+		flag.StringVar(&c.BaseURL, "b", "http://localhost:8080", "shortLink prefix")
 		flag.Parse()
 
 		var envs Envs
@@ -33,8 +33,8 @@ func (c *Config) Init() {
 			c.ServerAddress = envs.serverAddress
 		}
 
-		if envs.baseUrl != "" {
-			c.BaseUrl = envs.baseUrl
+		if envs.baseURL != "" {
+			c.BaseURL = envs.baseURL
 		}
 
 		c.isInitiated = true

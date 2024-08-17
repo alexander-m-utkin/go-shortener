@@ -66,7 +66,7 @@ func postShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 		globalStorage[id] = string(rBody)
 	}
 
-	shortLink := configuration.BaseUrl + "/" + id
+	shortLink := configuration.BaseURL + "/" + id
 
 	w.WriteHeader(http.StatusCreated)
 	_, _ = w.Write([]byte(shortLink))
