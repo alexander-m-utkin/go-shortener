@@ -36,6 +36,8 @@ func testRequest(ts *httptest.Server, method,
 }
 
 func TestRouter(t *testing.T) {
+	configuration.Init()
+
 	ts := httptest.NewServer(AppRouter())
 	defer ts.Close()
 
@@ -72,6 +74,8 @@ func TestRouter(t *testing.T) {
 }
 
 func TestGetUrlHandler(t *testing.T) {
+	configuration.Init()
+
 	type want struct {
 		body        string
 		code        int
@@ -124,6 +128,8 @@ func TestGetUrlHandler(t *testing.T) {
 }
 
 func TestPostShortLinkHandler(t *testing.T) {
+	configuration.Init()
+
 	type want struct {
 		body string
 		code int

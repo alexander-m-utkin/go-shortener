@@ -1,11 +1,14 @@
 package main
 
 import (
+	"github.com/alexander-m-utkin/go-shortener.git/config"
 	"github.com/go-chi/chi/v5"
 	"io"
 	"math/rand"
 	"net/http"
 )
+
+var configuration config.Config
 
 var globalStorage = map[string]string{
 	"EwHXdJfB": "https://practicum.yandex.ru/",
@@ -63,7 +66,7 @@ func postShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 		globalStorage[id] = string(rBody)
 	}
 
-	shortLink := "http://" + r.Host + "/" + id
+	shortLink := configuration.B + "/" + id
 
 	w.WriteHeader(http.StatusCreated)
 	_, _ = w.Write([]byte(shortLink))
@@ -77,7 +80,9 @@ func AppRouter() chi.Router {
 }
 
 func main() {
-	err := http.ListenAndServe(`:8080`, AppRouter())
+	configuration.Init()
+
+	err := http.ListenAndServe(configuration.A, AppRouter())
 	if err != nil {
 		panic(err)
 	}
