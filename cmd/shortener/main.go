@@ -66,7 +66,7 @@ func postShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 		globalStorage[id] = string(rBody)
 	}
 
-	shortLink := configuration.B + "/" + id
+	shortLink := configuration.BaseUrl + "/" + id
 
 	w.WriteHeader(http.StatusCreated)
 	_, _ = w.Write([]byte(shortLink))
@@ -82,7 +82,7 @@ func AppRouter() chi.Router {
 func main() {
 	configuration.Init()
 
-	err := http.ListenAndServe(configuration.A, AppRouter())
+	err := http.ListenAndServe(configuration.ServerAddress, AppRouter())
 	if err != nil {
 		panic(err)
 	}
