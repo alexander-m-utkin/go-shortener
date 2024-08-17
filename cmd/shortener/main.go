@@ -34,7 +34,7 @@ func keyForValue(m map[string]string, value string) (string, bool) {
 	return "", false
 }
 
-func getUrlHandle(w http.ResponseWriter, r *http.Request) {
+func getURLHandle(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	if url, ok := globalStorage[id]; ok {
@@ -74,7 +74,7 @@ func postShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 
 func AppRouter() chi.Router {
 	r := chi.NewRouter()
-	r.Get("/{id}", getUrlHandle)
+	r.Get("/{id}", getURLHandle)
 	r.Post("/", postShortLinkHandle)
 	return r
 }

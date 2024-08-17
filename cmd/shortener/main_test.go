@@ -115,10 +115,11 @@ func TestGetUrlHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			request := httptest.NewRequest(tt.method, tt.path, nil)
 			r := chi.NewRouter()
-			r.Get("/{id}", getUrlHandle)
+			r.Get("/{id}", getURLHandle)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, request)
 			res := w.Result()
+			defer res.Body.Close()
 			assert.Equal(t, tt.want.code, res.StatusCode)
 			if tt.want.location != "" {
 				assert.Equal(t, tt.want.location, res.Header.Get("location"))
