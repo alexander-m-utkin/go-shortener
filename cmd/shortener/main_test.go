@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"github.com/alexander-m-utkin/go-shortener.git/internal/app"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
@@ -36,9 +37,9 @@ func testRequest(ts *httptest.Server, method,
 }
 
 func TestRouter(t *testing.T) {
-	configuration.Init()
+	app.Configuration.Init()
 
-	ts := httptest.NewServer(AppRouter())
+	ts := httptest.NewServer(app.Router())
 	defer ts.Close()
 
 	type want struct {
@@ -74,7 +75,7 @@ func TestRouter(t *testing.T) {
 }
 
 func TestGetUrlHandler(t *testing.T) {
-	configuration.Init()
+	app.Configuration.Init()
 
 	type want struct {
 		body        string
@@ -115,7 +116,7 @@ func TestGetUrlHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			request := httptest.NewRequest(tt.method, tt.path, nil)
 			r := chi.NewRouter()
-			r.Get("/{id}", getURLHandle)
+			r.Get("/{id}", app.GetURLHandle)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, request)
 			res := w.Result()
@@ -129,7 +130,7 @@ func TestGetUrlHandler(t *testing.T) {
 }
 
 func TestPostShortLinkHandler(t *testing.T) {
-	configuration.Init()
+	app.Configuration.Init()
 
 	type want struct {
 		body string
@@ -170,7 +171,7 @@ func TestPostShortLinkHandler(t *testing.T) {
 			request.Host = "localhost:8080"
 
 			r := chi.NewRouter()
-			r.Post("/", postShortLinkHandle)
+			r.Post("/", app.PostShortLinkHandle)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, request)
 			res := w.Result()
