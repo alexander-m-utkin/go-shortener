@@ -3,7 +3,6 @@ package config
 import (
 	"flag"
 	"github.com/caarlos0/env/v6"
-	"log"
 )
 
 type Envs struct {
@@ -17,7 +16,7 @@ type Config struct {
 	isInitiated   bool
 }
 
-func (c *Config) Init() {
+func (c *Config) Init() error {
 	if !c.isInitiated {
 		flag.StringVar(&c.ServerAddress, "a", "localhost:8080", "address and port to run server")
 		flag.StringVar(&c.BaseURL, "b", "http://localhost:8080", "shortLink prefix")
@@ -26,7 +25,7 @@ func (c *Config) Init() {
 		var envs Envs
 		err := env.Parse(&envs)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		if envs.serverAddress != "" {
@@ -38,5 +37,7 @@ func (c *Config) Init() {
 		}
 
 		c.isInitiated = true
+
 	}
+	return nil
 }

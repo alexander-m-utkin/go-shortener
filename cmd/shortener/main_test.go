@@ -7,6 +7,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -37,7 +38,10 @@ func testRequest(ts *httptest.Server, method,
 }
 
 func TestRouter(t *testing.T) {
-	app.Configuration.Init()
+	err := app.Configuration.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	ts := httptest.NewServer(app.Router())
 	defer ts.Close()
@@ -75,7 +79,10 @@ func TestRouter(t *testing.T) {
 }
 
 func TestGetUrlHandler(t *testing.T) {
-	app.Configuration.Init()
+	err := app.Configuration.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	type want struct {
 		body        string
@@ -130,7 +137,10 @@ func TestGetUrlHandler(t *testing.T) {
 }
 
 func TestPostShortLinkHandler(t *testing.T) {
-	app.Configuration.Init()
+	err := app.Configuration.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	type want struct {
 		body string
