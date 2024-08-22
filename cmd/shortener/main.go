@@ -7,7 +7,12 @@ import (
 )
 
 func main() {
-	err := app.Configuration.Init()
+	err := app.Configuration.ParseFlags()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = app.Configuration.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
