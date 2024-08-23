@@ -1,7 +1,6 @@
 package config
 
 import (
-	"flag"
 	"github.com/caarlos0/env/v6"
 )
 
@@ -20,15 +19,15 @@ type Config struct {
 	BaseURL       string
 }
 
-func (c *Config) ParseFlags() error {
-	flag.StringVar(&c.ServerAddress, "a", defaultConfig["ServerAddress"], "address and port to run server")
-	flag.StringVar(&c.BaseURL, "b", defaultConfig["BaseURL"], "shortLink prefix")
-	flag.Parse()
+func (c *Config) Init(serverAddress string, baseURL string) error {
+	if serverAddress != "" {
+		c.ServerAddress = serverAddress
+	}
 
-	return nil
-}
+	if baseURL != "" {
+		c.BaseURL = baseURL
+	}
 
-func (c *Config) Init() error {
 	var envs Envs
 	err := env.Parse(&envs)
 	if err != nil {

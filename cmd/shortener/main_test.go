@@ -38,7 +38,7 @@ func testRequest(ts *httptest.Server, method,
 }
 
 func TestRouter(t *testing.T) {
-	err := app.Configuration.Init()
+	err := app.Configuration.Init("", "")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -79,7 +79,7 @@ func TestRouter(t *testing.T) {
 }
 
 func TestGetUrlHandler(t *testing.T) {
-	err := app.Configuration.Init()
+	err := app.Configuration.Init("", "")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -137,7 +137,7 @@ func TestGetUrlHandler(t *testing.T) {
 }
 
 func TestPostShortLinkHandler(t *testing.T) {
-	err := app.Configuration.Init()
+	err := app.Configuration.Init("", "")
 	if err != nil {
 		log.Fatal(err)
 	}
