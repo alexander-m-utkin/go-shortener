@@ -5,27 +5,34 @@ import (
 )
 
 var defaultConfig = map[string]string{
-	"ServerAddress": "localhost:8080",
 	"BaseURL":       "http://localhost:8080",
+	"ServerAddress": "localhost:8080",
+	"LogLevel":      "info",
 }
 
 type Envs struct {
 	baseURL       string `env:"BASE_URL"`
 	serverAddress string `env:"SERVER_ADDRESS"`
+	logLevel      string `env:"LOG_LEVEL"`
 }
 
 type Config struct {
-	ServerAddress string
 	BaseURL       string
+	ServerAddress string
+	LogLevel      string
 }
 
-func (c *Config) Init(serverAddress string, baseURL string) error {
+func (c *Config) Init(serverAddress string, baseURL string, logLevel string) error {
 	if serverAddress != "" {
 		c.ServerAddress = serverAddress
 	}
 
 	if baseURL != "" {
 		c.BaseURL = baseURL
+	}
+
+	if baseURL != "" {
+		c.LogLevel = logLevel
 	}
 
 	var envs Envs
@@ -42,12 +49,20 @@ func (c *Config) Init(serverAddress string, baseURL string) error {
 		c.BaseURL = envs.baseURL
 	}
 
+	if envs.logLevel != "" {
+		c.LogLevel = envs.logLevel
+	}
+
 	if c.ServerAddress == "" {
 		c.ServerAddress = defaultConfig["ServerAddress"]
 	}
 
 	if c.BaseURL == "" {
 		c.BaseURL = defaultConfig["BaseURL"]
+	}
+
+	if c.LogLevel == "" {
+		c.LogLevel = defaultConfig["LogLevel"]
 	}
 
 	return nil
