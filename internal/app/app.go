@@ -57,6 +57,9 @@ func PostShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 	rBodyString := string(rBody)
 
 	var id string
+	// если url уже есть в хранилище то просто вернем его id,
+	// если url нет в хранилище - сгенерируем новый id и сохраним под ним url.
+	// Тут перебор map KeyForValue это временный вариант, конечно так не надо делать.
 	if foundKey, isFound := KeyForValue(GlobalStorage, rBodyString); isFound {
 		id = foundKey
 	} else {
