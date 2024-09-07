@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/alexander-m-utkin/go-shortener.git/internal/pkg/config"
+	"github.com/alexander-m-utkin/go-shortener.git/internal/pkg/logger"
 	"github.com/go-chi/chi/v5"
 	"io"
 	"math/rand"
@@ -56,9 +57,6 @@ func PostShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 	rBodyString := string(rBody)
 
 	var id string
-	// если url уже есть в хранилище то просто вернем его id,
-	// если url нет в хранилище - сгенерируем новый id и сохраним под ним url.
-	// Тут перебор map KeyForValue это временный вариант, конечно так не надо делать.
 	if foundKey, isFound := KeyForValue(GlobalStorage, rBodyString); isFound {
 		id = foundKey
 	} else {
@@ -74,6 +72,9 @@ func PostShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 
 func Router() chi.Router {
 	r := chi.NewRouter()
+
+	r.Use(logger.RequestLogger)
+
 	r.Get("/{id}", GetURLHandle)
 	r.Post("/", PostShortLinkHandle)
 	return r
