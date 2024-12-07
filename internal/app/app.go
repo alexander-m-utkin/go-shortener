@@ -108,14 +108,14 @@ func PostShortenHandle(w http.ResponseWriter, r *http.Request) {
 		Result: shortLink,
 	}
 
-	wBodyJson, err := json.Marshal(wBody)
+	wBodyJSON, err := json.Marshal(wBody)
 	if err != nil {
 		http.Error(w, "Failed marshal string", http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	_, _ = w.Write(wBodyJson)
+	_, _ = w.Write(wBodyJSON)
 }
 
 func Router() chi.Router {
