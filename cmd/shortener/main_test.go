@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/alexander-m-utkin/go-shortener.git/internal/app"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
@@ -262,10 +261,12 @@ func TestPostShortenHandle(t *testing.T) {
 			if tt.want.bodyData != (app.PostShortenResponse{}) {
 				bodyBytes, err := io.ReadAll(res.Body)
 
-				var bodyData app.PostShortenResponse
+				if err != nil {
+					t.Fatalf("Failed to read bodyBytes: %v", err)
 
-				//test
-				fmt.Println("Response Body:", string(bodyBytes))
+				}
+
+				var bodyData app.PostShortenResponse
 
 				if err = json.Unmarshal(bodyBytes, &bodyData); err != nil {
 					t.Fatalf("Failed to unmarshal body: %v", err)
