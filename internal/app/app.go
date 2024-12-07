@@ -124,7 +124,7 @@ func Router() chi.Router {
 
 	r.Use(logger.RequestLogger)
 
-	r.Post("/shorten", PostShortenHandle)
+	r.Post("/api/shorten", PostShortenHandle)
 	r.Get("/{id}", GetURLHandle)
 	r.Post("/", PostShortLinkHandle)
 	return r

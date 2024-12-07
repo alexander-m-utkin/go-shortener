@@ -205,7 +205,7 @@ func TestPostShortLinkHandler(t *testing.T) {
 }
 
 func TestPostShortenHandle(t *testing.T) {
-	path := "/shorten"
+	path := "/api/shorten"
 
 	err := app.Configuration.Init("", "", "")
 	if err != nil {
