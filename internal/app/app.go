@@ -1,7 +1,9 @@
 package app
 
 import (
+	"encoding/json"
 	"github.com/alexander-m-utkin/go-shortener.git/internal/pkg/config"
+	"github.com/alexander-m-utkin/go-shortener.git/internal/pkg/logger"
 	"github.com/go-chi/chi/v5"
 	"io"
 	"math/rand"
@@ -56,9 +58,6 @@ func PostShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 	rBodyString := string(rBody)
 
 	var id string
-	// если url уже есть в хранилище то просто вернем его id,
-	// если url нет в хранилище - сгенерируем новый id и сохраним под ним url.
-	// Тут перебор map KeyForValue это временный вариант, конечно так не надо делать.
 	if foundKey, isFound := KeyForValue(GlobalStorage, rBodyString); isFound {
 		id = foundKey
 	} else {
@@ -72,8 +71,60 @@ func PostShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write([]byte(shortLink))
 }
 
+type PostShortenRequest struct {
+	URL string `json:"url"`
+}
+
+type PostShortenResponse struct {
+	Result string `json:"result"`
+}
+
+func PostShortenHandle(w http.ResponseWriter, r *http.Request) {
+	rBody, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read request rBody", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	var body PostShortenRequest
+
+	if err = json.Unmarshal(rBody, &body); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var id string
+	if foundKey, isFound := KeyForValue(GlobalStorage, body.URL); isFound {
+		id = foundKey
+	} else {
+		id = RandString(8)
+		GlobalStorage[id] = body.URL
+	}
+
+	shortLink := Configuration.BaseURL + "/" + id
+
+	wBody := PostShortenResponse{
+		Result: shortLink,
+	}
+
+	wBodyJSON, err := json.Marshal(wBody)
+	if err != nil {
+		http.Error(w, "Failed marshal string", http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	_, _ = w.Write(wBodyJSON)
+}
+
 func Router() chi.Router {
 	r := chi.NewRouter()
+
+	r.Use(logger.RequestLogger)
+
+	r.Post("/api/shorten", PostShortenHandle)
 	r.Get("/{id}", GetURLHandle)
 	r.Post("/", PostShortLinkHandle)
 	return r
