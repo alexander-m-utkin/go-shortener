@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"github.com/alexander-m-utkin/go-shortener.git/internal/app"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
@@ -198,6 +200,80 @@ func TestPostShortLinkHandler(t *testing.T) {
 				bodyString := string(bodyBytes)
 
 				assert.Equal(t, tt.want.body, bodyString)
+			}
+		})
+	}
+}
+
+func TestPostShortenHandle(t *testing.T) {
+	path := "/shorten"
+
+	err := app.Configuration.Init("", "", "")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	type want struct {
+		bodyData app.PostShortenResponse
+		code     int
+	}
+
+	tests := []struct {
+		body   string
+		method string
+		name   string
+		path   string
+		want   want
+	}{
+		{
+			name:   "POST " + path,
+			body:   "{\"url\":\"https://practicum.yandex.ru/\"}",
+			method: http.MethodPost,
+			path:   path,
+			want: want{
+				bodyData: app.PostShortenResponse{Result: "http://localhost:8080/EwHXdJfB"},
+				code:     http.StatusCreated,
+			},
+		},
+		{
+			name:   "PUT  " + path,
+			body:   "{\"url\":\"https://practicum.yandex.ru/\"}",
+			method: http.MethodPut,
+			path:   path,
+			want: want{
+				code: http.StatusMethodNotAllowed,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			request := httptest.NewRequest(tt.method, tt.path, bytes.NewBufferString(tt.body))
+			request.Host = "localhost:8080"
+
+			r := chi.NewRouter()
+			r.Post(path, app.PostShortenHandle)
+			w := httptest.NewRecorder()
+			r.ServeHTTP(w, request)
+			res := w.Result()
+
+			assert.Equal(t, tt.want.code, res.StatusCode)
+
+			if tt.want.bodyData != (app.PostShortenResponse{}) {
+				bodyBytes, err := io.ReadAll(res.Body)
+
+				var bodyData app.PostShortenResponse
+
+				//test
+				fmt.Println("Response Body:", string(bodyBytes))
+
+				if err = json.Unmarshal(bodyBytes, &bodyData); err != nil {
+					t.Fatalf("Failed to unmarshal body: %v", err)
+				}
+
+				defer res.Body.Close()
+
+				assert.Equal(t, tt.want.bodyData, bodyData)
 			}
 		})
 	}
