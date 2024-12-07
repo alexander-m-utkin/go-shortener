@@ -72,7 +72,7 @@ func PostShortLinkHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 type PostShortenRequest struct {
-	Url string `json:"url"`
+	URL string `json:"url"`
 }
 
 type PostShortenResponse struct {
@@ -95,11 +95,11 @@ func PostShortenHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var id string
-	if foundKey, isFound := KeyForValue(GlobalStorage, body.Url); isFound {
+	if foundKey, isFound := KeyForValue(GlobalStorage, body.URL); isFound {
 		id = foundKey
 	} else {
 		id = RandString(8)
-		GlobalStorage[id] = body.Url
+		GlobalStorage[id] = body.URL
 	}
 
 	shortLink := Configuration.BaseURL + "/" + id
