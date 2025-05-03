@@ -14,12 +14,12 @@ import (
 var Configuration config.Config
 
 var GlobalStorage = map[string]string{
-	"EwHXdJfB": "https://practicum.yandex.ru/",
-	"NQmfnwrt": "https://practicum.yandex.ru/123/",
+	//"EwHXdJfB": "https://practicum.yandex.ru/",
+	//"NQmfnwrt": "https://practicum.yandex.ru/123/",
 	//"OWVHDnHE": "http://h02ifaoltlwna.yandex/c0sdvtdv/jlhiim6aqxo6pf",
-	"iWMRzXOr": "http://viwwcdahrwag2h.ru/i6nqys7ksj/fbvx6fpddpowr",
-	"KzZvYuMr": "http://n3tbmjo.biz/cp4pcntmrwpu/lofqr",
-	"lSoyNzdB": "http://mgrf9aulyvti.yandex/mahec",
+	//"iWMRzXOr": "http://viwwcdahrwag2h.ru/i6nqys7ksj/fbvx6fpddpowr",
+	//"KzZvYuMr": "http://n3tbmjo.biz/cp4pcntmrwpu/lofqr",
+	//"lSoyNzdB": "http://mgrf9aulyvti.yandex/mahec",
 }
 
 func RandString(n int) string {
