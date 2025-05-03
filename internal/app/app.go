@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"github.com/alexander-m-utkin/go-shortener.git/internal/pkg/compress"
 	"github.com/alexander-m-utkin/go-shortener.git/internal/pkg/config"
 	"github.com/alexander-m-utkin/go-shortener.git/internal/pkg/logger"
 	"github.com/go-chi/chi/v5"
@@ -122,6 +123,7 @@ func PostShortenHandle(w http.ResponseWriter, r *http.Request) {
 func Router() chi.Router {
 	r := chi.NewRouter()
 
+	r.Use(compress.ZlibHandle)
 	r.Use(logger.RequestLogger)
 
 	r.Post("/api/shorten", PostShortenHandle)
