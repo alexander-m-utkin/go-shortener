@@ -18,6 +18,7 @@ var GlobalStorage = map[string]string{
 	"NQmfnwrt": "https://practicum.yandex.ru/123/",
 	"OWVHDnHE": "http://h02ifaoltlwna.yandex/c0sdvtdv/jlhiim6aqxo6pf",
 	"iWMRzXOr": "http://viwwcdahrwag2h.ru/i6nqys7ksj/fbvx6fpddpowr",
+	"KzZvYuMr": "http://n3tbmjo.biz/cp4pcntmrwpu/lofqr",
 }
 
 func RandString(n int) string {
