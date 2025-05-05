@@ -124,7 +124,7 @@ func PostShortenHandle(w http.ResponseWriter, r *http.Request) {
 func Router() chi.Router {
 	r := chi.NewRouter()
 
-	r.Use(compress.ZlibHandle)
+	r.Use(compress.GzipHandle)
 	r.Use(logger.RequestLogger)
 
 	r.Post("/api/shorten", PostShortenHandle)
